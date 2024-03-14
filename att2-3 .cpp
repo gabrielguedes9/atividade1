@@ -1,129 +1,97 @@
 #include <stdio.h>
-#include <string.h>
 
-#define MAX_FUNCIONARIOS 10
+#define MAX_SIZE 20
 
-// Definição da estrutura para representar um funcionário
-struct Funcionario {
-    char nome[50];
-    char cargo[50];
-    float salarioBase;
-    float beneficios;
-    float descontos;
-    float salarioLiquido;
+struct Conjunto {
+    int elementos[MAX_SIZE];
+    int tamanho;
 };
 
-// Definição da estrutura para representar a loja
-struct Loja {
-    struct Funcionario funcionarios[MAX_FUNCIONARIOS];
-    int totalFuncionarios;
-};
-
-// Função para cadastrar um funcionário na loja
-void cadastrarFuncionario(struct Loja *loja) {
-    if (loja->totalFuncionarios >= MAX_FUNCIONARIOS) {
-        printf("Limite de funcionários atingido.\n");
-        return;
-    }
-
-    struct Funcionario novoFuncionario;
-    printf("Cadastro de Funcionário:\n");
-    printf("Nome: ");
-    scanf("%s", novoFuncionario.nome);
-    printf("Cargo: ");
-    scanf("%s", novoFuncionario.cargo);
-    printf("Salario Base: ");
-    scanf("%f", &novoFuncionario.salarioBase);
-    printf("Beneficios: ");
-    scanf("%f", &novoFuncionario.beneficios);
-    printf("Descontos: ");
-    scanf("%f", &novoFuncionario.descontos);
-
-    novoFuncionario.salarioLiquido = novoFuncionario.salarioBase + novoFuncionario.beneficios - novoFuncionario.descontos;
-
-    loja->funcionarios[loja->totalFuncionarios] = novoFuncionario;
-    loja->totalFuncionarios++;
-    printf("Funcionário cadastrado com sucesso!\n");
+void criarConjuntoVazio(struct Conjunto *conjunto) {
+    conjunto->tamanho = 0;
 }
 
-// Função para calcular e exibir o salário líquido de todos os funcionários
-void calcularSalarioLiquido(struct Loja *loja) {
-    printf("Salario Liquido de Funcionarios:\n");
-    for (int i = 0; i < loja->totalFuncionarios; i++) {
-        printf("Nome: %-20s Salario Liquido: %.2f\n", loja->funcionarios[i].nome, loja->funcionarios[i].salarioLiquido);
+void lerConjunto(struct Conjunto *conjunto) {
+    printf("Digite o tamanho do conjunto (no máximo %d): ", MAX_SIZE);
+    scanf("%d", &conjunto->tamanho);
+
+    if (conjunto->tamanho > MAX_SIZE) {
+        printf("Tamanho excedeu o limite. Ajustando para %d.\n", MAX_SIZE);
+        conjunto->tamanho = MAX_SIZE;
+    }
+
+    printf("Digite os elementos do conjunto:\n");
+    for (int i = 0; i < conjunto->tamanho; i++) {
+        scanf("%d", &conjunto->elementos[i]);
     }
 }
 
-// Função para calcular e exibir a média salarial da loja
-void calcularMediaSalarial(struct Loja *loja) {
-    float totalSalarios = 0;
-    for (int i = 0; i < loja->totalFuncionarios; i++) {
-        totalSalarios += loja->funcionarios[i].salarioLiquido;
+void uniaoConjuntos(const struct Conjunto *conjuntoA, const struct Conjunto *conjuntoB, struct Conjunto *uniao) {
+    criarConjuntoVazio(uniao);
+
+    for (int i = 0; i < conjuntoA->tamanho; i++) {
+        uniao->elementos[uniao->tamanho] = conjuntoA->elementos[i];
+        uniao->tamanho++;
     }
 
-    if (loja->totalFuncionarios > 0) {
-        float mediaSalarial = totalSalarios / loja->totalFuncionarios;
-        printf("Media Salarial da Loja: %.2f\n", mediaSalarial);
-    } else {
-        printf("Nenhum funcionario cadastrado.\n");
-    }
-}
+    for (int i = 0; i < conjuntoB->tamanho; i++) {
+        int elemento = conjuntoB->elementos[i];
+        int encontrado = 0;
 
-// Função para exibir o funcionário com o maior salário líquido
-void exibirMaiorSalario(struct Loja *loja) {
-    if (loja->totalFuncionarios == 0) {
-        printf("Nenhum funcionario cadastrado.\n");
-        return;
-    }
+        for (int j = 0; j < conjuntoA->tamanho; j++) {
+            if (elemento == conjuntoA->elementos[j]) {
+                encontrado = 1;
+                break;
+            }
+        }
 
-    float maiorSalario = loja->funcionarios[0].salarioLiquido;
-    int indiceMaiorSalario = 0;
-    for (int i = 1; i < loja->totalFuncionarios; i++) {
-        if (loja->funcionarios[i].salarioLiquido > maiorSalario) {
-            maiorSalario = loja->funcionarios[i].salarioLiquido;
-            indiceMaiorSalario = i;
+        if (!encontrado) {
+            uniao->elementos[uniao->tamanho] = elemento;
+            uniao->tamanho++;
         }
     }
+}
 
-    printf("Funcionario com Maior Salario:\n");
-    printf("Nome: %-20s Salario Liquido: %.2f\n", loja->funcionarios[indiceMaiorSalario].nome, maiorSalario);
+void intersecaoConjuntos(const struct Conjunto *conjuntoA, const struct Conjunto *conjuntoB, struct Conjunto *intersecao) {
+    criarConjuntoVazio(intersecao);
+
+    for (int i = 0; i < conjuntoA->tamanho; i++) {
+        int elemento = conjuntoA->elementos[i];
+
+        for (int j = 0; j < conjuntoB->tamanho; j++) {
+            if (elemento == conjuntoB->elementos[j]) {
+                intersecao->elementos[intersecao->tamanho] = elemento;
+                intersecao->tamanho++;
+                break;
+            }
+        }
+    }
+}
+
+void imprimirConjunto(const struct Conjunto *conjunto) {
+    printf("{ ");
+    for (int i = 0; i < conjunto->tamanho; i++) {
+        printf("%d ", conjunto->elementos[i]);
+    }
+    printf("}\n");
 }
 
 int main() {
-    struct Loja minhaLoja;
-    minhaLoja.totalFuncionarios = 0;
+    struct Conjunto conjuntoA, conjuntoB, uniao, intersecao;
 
-    int opcao;
-    do {
-        printf("\nMenu:\n");
-        printf("1. Cadastrar Funcionario\n");
-        printf("2. Calcular Salario Liquido\n");
-        printf("3. Calcular Media Salarial\n");
-        printf("4. Exibir Funcionario com Maior Salario\n");
-        printf("0. Sair\n");
-        printf("Escolha uma opcao: ");
-        scanf("%d", &opcao);
+    printf("Conjunto A:\n");
+    lerConjunto(&conjuntoA);
 
-        switch (opcao) {
-            case 1:
-                cadastrarFuncionario(&minhaLoja);
-                break;
-            case 2:
-                calcularSalarioLiquido(&minhaLoja);
-                break;
-            case 3:
-                calcularMediaSalarial(&minhaLoja);
-                break;
-            case 4:
-                exibirMaiorSalario(&minhaLoja);
-                break;
-            case 0:
-                printf("Saindo...\n");
-                break;
-            default:
-                printf("Opcao invalida. Tente novamente.\n");
-        }
-    } while (opcao != 0);
+    printf("Conjunto B:\n");
+    lerConjunto(&conjuntoB);
+
+    printf("União de A e B: ");
+    uniaoConjuntos(&conjuntoA, &conjuntoB, &uniao);
+    imprimirConjunto(&uniao);
+
+    printf("Interseção de A e B: ");
+    intersecaoConjuntos(&conjuntoA, &conjuntoB, &intersecao);
+    imprimirConjunto(&intersecao);
 
     return 0;
 }
