@@ -3,7 +3,7 @@
 
 #define MAX_FUNCIONARIOS 10
 
-// Definição da estrutura para representar um funcionário
+// DefiniÃ§Ã£o da estrutura para representar um funcionÃ¡rio
 struct Funcionario {
     char nome[50];
     char cargo[50];
@@ -13,21 +13,21 @@ struct Funcionario {
     float salarioLiquido;
 };
 
-// Definição da estrutura para representar a loja
+// DefiniÃ§Ã£o da estrutura para representar a loja
 struct Loja {
     struct Funcionario funcionarios[MAX_FUNCIONARIOS];
     int totalFuncionarios;
 };
 
-// Função para cadastrar um funcionário na loja
+// FunÃ§Ã£o para cadastrar um funcionÃ¡rio na loja
 void cadastrarFuncionario(struct Loja *loja) {
     if (loja->totalFuncionarios >= MAX_FUNCIONARIOS) {
-        printf("Limite de funcionários atingido.\n");
+        printf("Limite de funcionÃ¡rios atingido.\n");
         return;
     }
 
     struct Funcionario novoFuncionario;
-    printf("Cadastro de Funcionário:\n");
+    printf("Cadastro de FuncionÃ¡rio:\n");
     printf("Nome: ");
     scanf("%s", novoFuncionario.nome);
     printf("Cargo: ");
@@ -43,10 +43,10 @@ void cadastrarFuncionario(struct Loja *loja) {
 
     loja->funcionarios[loja->totalFuncionarios] = novoFuncionario;
     loja->totalFuncionarios++;
-    printf("Funcionário cadastrado com sucesso!\n");
+    printf("FuncionÃ¡rio cadastrado com sucesso!\n");
 }
 
-// Função para calcular e exibir o salário líquido de todos os funcionários
+// FunÃ§Ã£o para calcular e exibir o salÃ¡rio lÃ­quido de todos os funcionÃ¡rios
 void calcularSalarioLiquido(struct Loja *loja) {
     printf("Salario Liquido de Funcionarios:\n");
     for (int i = 0; i < loja->totalFuncionarios; i++) {
@@ -54,7 +54,7 @@ void calcularSalarioLiquido(struct Loja *loja) {
     }
 }
 
-// Função para calcular e exibir a média salarial da loja
+// FunÃ§Ã£o para calcular e exibir a mÃ©dia salarial da loja
 void calcularMediaSalarial(struct Loja *loja) {
     float totalSalarios = 0;
     for (int i = 0; i < loja->totalFuncionarios; i++) {
@@ -69,7 +69,7 @@ void calcularMediaSalarial(struct Loja *loja) {
     }
 }
 
-// Função para exibir o funcionário com o maior salário líquido
+// FunÃ§Ã£o para exibir o funcionÃ¡rio com o maior salÃ¡rio lÃ­quido
 void exibirMaiorSalario(struct Loja *loja) {
     if (loja->totalFuncionarios == 0) {
         printf("Nenhum funcionario cadastrado.\n");
